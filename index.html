@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windows 11 UI Clone</title>
+    <link
+      rel="shortcut icon"
+      href="./assets/icons/windowsFabIcon.png"
+      type="image/x-icon"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Remix Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main>
+      <!-- Desktop background -->
+      <div class="desktop"></div>
+      <!-- Desktop Icons -->
+      <div class="desktopIcons">
+        <div class="iconCtn file-explorer-icon" title="This PC">
+          <img src="./assets/icons/this-pc.png" alt="This PC" />
+          <h4>This PC</h4>
+        </div>
+        <div class="iconCtn file-explorer-icon" title="File Explorer">
+          <img src="./assets/icons/file-explorer.png" alt="File Explorer" />
+          <h4>File Explorer</h4>
+        </div>
+        <div class="iconCtn" title="Notepad">
+          <img src="./assets/icons/notepad.png" alt="Notepad" />
+          <h4>Notepad</h4>
+        </div>
+        <div class="iconCtn" title="Recycle Bin">
+          <img src="./assets/icons/recycle-bin.png" alt="Recycle Bin" />
+          <h4>Recycle Bin</h4>
+        </div>
+      </div>
+
+      <!-- Start Menu (appears on Start button click) -->
+      <div class="startWindow" id="startMenu">
+        <!-- Pinned apps -->
+        <div class="pinnedCtn">
+          <div class="pinBar">
+            <h3>Pinned</h3>
+            <div class="allAppsIcon" title="View all apps">
+              <h3>All <i class="ri-arrow-right-s-line"></i></h3>
+            </div>
+          </div>
+          <div class="appsGrid">
+            <div class="appCtn" title="Brave Browser">
+              <img src="./assets/icons/brave-browser.png" alt="Brave" />
+              <h5>Brave</h5>
+            </div>
+            <div class="appCtn" title="copilot">
+              <img src="./assets/icons/copilot.png" alt="Edge" />
+              <h5>Copilot</h5>
+            </div>
+            <div class="appCtn" title="Microsoft Edge">
+              <img src="./assets/icons/edge.png" alt="Edge" />
+              <h5>Microsoft Edge</h5>
+            </div>
+            <div class="appCtn file-explorer-icon" title="File Explorer">
+              <img src="./assets/icons/file-explorer.png" alt="Edge" />
+              <h5>File Explorer</h5>
+            </div>
+            <div class="appCtn" title="Microsoft Store">
+              <img src="./assets/icons/microsoft-store.png" alt="Edge" />
+              <h5>Microsoft Store</h5>
+            </div>
+            <div class="appCtn" title="Microsoft Vs Code">
+              <img src="./assets/icons/vsCode.png" alt="Edge" />
+              <h5>Vs Code</h5>
+            </div>
+            <!-- Add more app icons here -->
+          </div>
+        </div>
+
+        <!-- Recommended files/apps -->
+        <div class="recommendedCtn">
+          <div class="pinBar">
+            <h3>Recommended</h3>
+            <div class="allAppsIcon" title="View more">
+              <h3>More <i class="ri-arrow-right-s-line"></i></h3>
+            </div>
+          </div>
+          <div class="RecCtn">
+            <!-- Repeat block for recent files -->
+            <div class="fileCtn" title="Visual Studio Code">
+              <div class="fileimg">
+                <img src="./assets/icons/vsCode.png" alt="VS Code" />
+              </div>
+              <div class="fileTxt">
+                <h4>VS Code</h4>
+                <h5>Recently added</h5>
+              </div>
+            </div>
+            <!-- Repeat for more files -->
+          </div>
+        </div>
+
+        <!-- Bottom profile & power section -->
+        <div class="profileBar">
+          <div class="prf" title="Your profile">
+            <img src="./assets/user.png" alt="User" />
+            <h2>User</h2>
+          </div>
+          <div class="powerIcon" title="Shutdown or restart">
+            <img src="./assets/icons/powerShutdown.png" alt="Power" />
+          </div>
+        </div>
+      </div>
+      <!-- File Explorer App Window -->
+      <div class="appWindow" id="fileExplorerWindow">
+        <div class="appHeader">
+          <span class="appTitle">File Explorer</span>
+          <div class="windowControls">
+            <button class="minBtn">–</button>
+            <button class="maxBtn">
+              <img width="15px" src="./assets/icons/Maximize.svg" alt="" />
+            </button>
+            <button class="closeBtn">×</button>
+          </div>
+        </div>
+        <div class="appContent">
+          <h2>📁 Welcome to File Explorer!</h2>
+          <p>This is a dummy window you opened by double-clicking the icon.</p>
+        </div>
+      </div>
+
+      <!-- Windows-style taskbar -->
+      <div class="taskBar">
+        <!-- Left: Weather -->
+        <div class="taskbarLeft" title="Weather">
+          <img
+            class="cloud-icon"
+            src="./assets/icons/blue-umbrella.png"
+            alt="Weather Icon"
+          />
+          <div class="weather">
+            <h5>Rain Light</h5>
+            <h5>Mostly Cloudy</h5>
+          </div>
+        </div>
+
+        <!-- Middle: App icons & Search -->
+        <div class="taskbarMid">
+          <div class="taskIcons">
+            <img
+              id="startBtn"
+              class="windowIcon"
+              src="./assets/icons/windowIcon.webp"
+              alt="Start Menu"
+              title="Start Menu"
+            />
+            <div class="searchBar" title="Search">
+              <img
+                class="searchIcon icons"
+                src="https://img.icons8.com/ios7/600/search.png"
+                alt="Search Icon"
+              />
+              <input type="text" placeholder="Search" />
+            </div>
+            <!-- Quick launch app icons -->
+            <img
+              class="taskview allIcons"
+              src="./assets/icons/Windows_11_Task_View_Icon.png"
+              alt="Task View"
+              title="Task View"
+            />
+            <img
+              class="barveIcon allIcons"
+              src="./assets/icons/brave-browser.png"
+              alt="Brave"
+              title="Brave"
+            />
+            <img
+              class="copilot allIcons"
+              src="./assets/icons/copilot.png"
+              alt="Copilot"
+              title="Copilot"
+            />
+            <img
+              id="fileExplorerWindow"
+              class="fileExpo allIcons file-explorer-icon"
+              src="./assets/icons/file-explorer.png"
+              alt="File Explorer"
+              title="File Explorer"
+            />
+            <img
+              class="edge allIcons"
+              src="./assets/icons/edge.png"
+              alt="Edge"
+              title="Microsoft Edge"
+            />
+            <img
+              class="micStore allIcons"
+              src="./assets/icons/microsoft-store.png"
+              alt="Microsoft Store"
+              title="Microsoft Store"
+            />
+            <img
+              class="vsCode allIcons"
+              src="./assets/icons/vsCode.png"
+              alt="VS Code"
+              title="Visual Studio Code"
+            />
+          </div>
+        </div>
+
+        <!-- Right: System controls & time -->
+        <div class="taskbarRight">
+          <i class="ri-arrow-up-s-line upArrow" title="Show hidden icons"></i>
+          <div class="Lang" title="Language settings">
+            <h5>ENG <br />IN</h5>
+          </div>
+          <div class="controlIcons">
+            <img
+              class="wifiIcon"
+              src="./assets/icons/wifi.png"
+              alt="WiFi"
+              title="WiFi status"
+            />
+            <img
+              class="soundIcon"
+              src="./assets/icons/soundIcon.png"
+              alt="Sound"
+              title="Sound settings"
+            />
+            <img
+              class="batteryIcon"
+              src="./assets/icons/batteryIcon.png"
+              alt="Battery"
+              title="Battery status"
+            />
+          </div>
+          <div class="dateTimeCtn" title="Date & Time">
+            <h4 id="liveTime">--:--:-- --</h4>
+            <h4 id="liveDate">--/--/----</h4>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- GSAP Animation Library -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Custom JS file -->
+    <script src="script.js"></script>
+  </body>
+</html>
