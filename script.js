@@ -135,6 +135,7 @@ function openAppWithAnimation(iconSelector, appWindowSelector) {
 }
 
 openAppWithAnimation(".file-explorer-icon", "#fileExplorerWindow"); // File Explorer
+openAppWithAnimation(".notepad-icon", "#notepadWindow"); // Notepad
 
 // ==============================
 // 🖱️ Drag App Window by Header
@@ -173,3 +174,4 @@ function makeWindowDraggable(windowSelector) {
 }
 
 makeWindowDraggable("#fileExplorerWindow");
+makeWindowDraggable("#notepadWindow");

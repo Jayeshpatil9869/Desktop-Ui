@@ -32,7 +32,7 @@
           <img src="./assets/icons/file-explorer.png" alt="File Explorer" />
           <h4>File Explorer</h4>
         </div>
-        <div class="iconCtn" title="Notepad">
+        <div class="iconCtn notepad-icon" title="Notepad">
           <img src="./assets/icons/notepad.png" alt="Notepad" />
           <h4>Notepad</h4>
         </div>
@@ -113,6 +113,25 @@
           <div class="powerIcon" title="Shutdown or restart">
             <img src="./assets/icons/powerShutdown.png" alt="Power" />
           </div>
+        </div>
+      </div>
+      <!-- Notepad App Window -->
+      <div class="appWindow" id="notepadWindow">
+        <div class="appHeader">
+          <span class="appTitle">Notepad</span>
+          <div class="windowControls">
+            <button class="minBtn">–</button>
+            <button class="maxBtn">
+              <img width="15px" src="./assets/icons/Maximize.svg" alt="" />
+            </button>
+            <button class="closeBtn">×</button>
+          </div>
+        </div>
+        <div class="appContent notepadContent">
+          <textarea
+            class="notepadArea"
+            placeholder="Type your notes here..."
+          ></textarea>
         </div>
       </div>
       <!-- File Explorer App Window -->
@@ -209,6 +228,12 @@
               src="./assets/icons/vsCode.png"
               alt="VS Code"
               title="Visual Studio Code"
+            />
+            <img
+              class="notepad-icon allIcons"
+              src="./assets/icons/notepad.png"
+              alt="Notepad"
+              title="Notepad"
             />
           </div>
         </div>
