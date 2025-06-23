@@ -117,18 +117,28 @@ function openAppWithAnimation(iconSelector, appWindowSelector) {
 
   // Maximize (toggle full screen)
   appWindow.querySelector(".maxBtn").addEventListener("click", () => {
+    const desktop = document.querySelector(".desktop");
+    const desktopRect = desktop.getBoundingClientRect();
     appWindow.classList.toggle("fullscreen");
     if (appWindow.classList.contains("fullscreen")) {
-      appWindow.style.top = "0";
-      appWindow.style.left = "0";
-      appWindow.style.width = "100%";
-      appWindow.style.height = "100%";
+      appWindow.style.position = "absolute";
+      appWindow.style.top = `${desktop.offsetTop}px`;
+      appWindow.style.left = `${desktop.offsetLeft}px`;
+      appWindow.style.width = `${desktop.offsetWidth}px`;
+      appWindow.style.height = `${desktop.offsetHeight}px`;
       appWindow.style.borderRadius = "0";
     } else {
-      appWindow.style.top = "0%";
-      appWindow.style.left = "0%";
-      appWindow.style.width = "40%";
-      appWindow.style.height = "40%";
+      // Restore to default size and center in desktop
+      const width = desktop.offsetWidth * 0.4;
+      const height = desktop.offsetHeight * 0.4;
+      appWindow.style.width = `${width}px`;
+      appWindow.style.height = `${height}px`;
+      appWindow.style.left = `${
+        desktop.offsetLeft + (desktop.offsetWidth - width) / 2
+      }px`;
+      appWindow.style.top = `${
+        desktop.offsetTop + (desktop.offsetHeight - height) / 2
+      }px`;
       appWindow.style.borderRadius = "10px";
     }
   });
@@ -136,6 +146,7 @@ function openAppWithAnimation(iconSelector, appWindowSelector) {
 
 openAppWithAnimation(".file-explorer-icon", "#fileExplorerWindow"); // File Explorer
 openAppWithAnimation(".notepad-icon", "#notepadWindow"); // Notepad
+openAppWithAnimation(".iconCtn[title='This PC']", "#thisPcWindow"); // This PC
 
 // ==============================
 // 🖱️ Drag App Window by Header
@@ -147,27 +158,78 @@ function makeWindowDraggable(windowSelector) {
   let isDragging = false;
   let offsetX = 0;
   let offsetY = 0;
+  let targetX = 0;
+  let targetY = 0;
+  let animFrame;
+
+  function animate() {
+    // Smoothly interpolate to target position
+    const currentX = parseFloat(appWindow.style.left) || 0;
+    const currentY = parseFloat(appWindow.style.top) || 0;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const nextX = lerp(currentX, targetX, 0.25);
+    const nextY = lerp(currentY, targetY, 0.25);
+    appWindow.style.left = `${nextX}px`;
+    appWindow.style.top = `${nextY}px`;
+    if (Math.abs(nextX - targetX) > 0.5 || Math.abs(nextY - targetY) > 0.5) {
+      animFrame = requestAnimationFrame(animate);
+    } else {
+      appWindow.style.left = `${targetX}px`;
+      appWindow.style.top = `${targetY}px`;
+    }
+  }
 
   header.addEventListener("mousedown", (e) => {
     isDragging = true;
     const rect = appWindow.getBoundingClientRect();
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
-
-    appWindow.style.zIndex = 99; // bring to front
-    document.body.style.userSelect = "none"; // avoid text select
+    appWindow.style.zIndex = 99;
+    document.body.style.userSelect = "none";
+    // Cancel any ongoing animation
+    cancelAnimationFrame(animFrame);
   });
 
   document.addEventListener("mousemove", (e) => {
     if (isDragging) {
-      const x = e.clientX - offsetX;
-      const y = e.clientY - offsetY;
-      appWindow.style.left = `${x}px`;
-      appWindow.style.top = `${y}px`;
+      const desktop = document.querySelector(".desktop");
+      const desktopRect = desktop.getBoundingClientRect();
+      const winWidth = appWindow.offsetWidth;
+      const winHeight = appWindow.offsetHeight;
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
+      x = Math.max(desktopRect.left, Math.min(x, desktopRect.right - winWidth));
+      y = Math.max(
+        desktopRect.top,
+        Math.min(y, desktopRect.bottom - winHeight)
+      );
+      targetX = x;
+      targetY = y;
+      cancelAnimationFrame(animFrame);
+      animFrame = requestAnimationFrame(animate);
     }
   });
 
   document.addEventListener("mouseup", () => {
+    if (isDragging) {
+      const desktop = document.querySelector(".desktop");
+      const desktopRect = desktop.getBoundingClientRect();
+      const winWidth = appWindow.offsetWidth;
+      const winHeight = appWindow.offsetHeight;
+      let left = targetX;
+      let top = targetY;
+      left = Math.max(
+        desktopRect.left,
+        Math.min(left, desktopRect.right - winWidth)
+      );
+      top = Math.max(
+        desktopRect.top,
+        Math.min(top, desktopRect.bottom - winHeight)
+      );
+      targetX = left;
+      targetY = top;
+      animFrame = requestAnimationFrame(animate);
+    }
     isDragging = false;
     document.body.style.userSelect = "auto";
   });
@@ -175,3 +237,27 @@ function makeWindowDraggable(windowSelector) {
 
 makeWindowDraggable("#fileExplorerWindow");
 makeWindowDraggable("#notepadWindow");
+makeWindowDraggable("#thisPcWindow");
+
+// This PC folder and drive click functionality
+function setupThisPcFunctionality() {
+  const thisPcWindow = document.getElementById("thisPcWindow");
+  if (!thisPcWindow) return;
+
+  // Folder click: show alert (or open File Explorer in the future)
+  thisPcWindow.querySelectorAll(".thisPc-folder").forEach((folder) => {
+    folder.addEventListener("dblclick", () => {
+      alert(`Opening ${folder.querySelector("span").textContent}...`);
+      // Optionally, you could open the File Explorer window here
+    });
+  });
+
+  // Drive click: show alert
+  thisPcWindow.querySelectorAll(".thisPc-drive").forEach((drive) => {
+    drive.addEventListener("dblclick", () => {
+      alert(`Opening ${drive.querySelector("span").textContent}...`);
+    });
+  });
+}
+
+setupThisPcFunctionality();
