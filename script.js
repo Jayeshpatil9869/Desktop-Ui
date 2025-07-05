@@ -191,3 +191,82 @@ function makeWindowDraggable(windowSelector) {
 }
 
 makeWindowDraggable("#fileExplorerWindow");
+
+// ==============================
+// 🖱️ Desktop Icons Draggable (Right-Click, Smooth, Bounded, Grid)
+// ==============================
+function alignIconsInGrid() {
+  const desktop = document.body; // or use a specific desktop container if you have one
+  const icons = document.querySelectorAll(".iconCtn");
+  const iconSize = 72; // Adjust based on your icon size (height + margin)
+  const margin = 14; // Space between icons
+  const desktopRect = desktop.getBoundingClientRect();
+  const maxRows = Math.floor((desktopRect.height - margin) / (iconSize + margin));
+  let x = margin, y = margin, row = 0;
+  icons.forEach((icon, i) => {
+    icon.style.position = "absolute";
+    icon.style.left = `${x}px`;
+    icon.style.top = `${y}px`;
+    icon.style.transition = "left 0.18s cubic-bezier(.4,1.3,.5,1), top 0.18s cubic-bezier(.4,1.3,.5,1)";
+    row++;
+    if (row >= maxRows) {
+      row = 0;
+      y = margin;
+      x += iconSize + margin;
+    } else {
+      y += iconSize + margin;
+    }
+  });
+}
+
+function makeIconsDraggable() {
+  const desktop = document.body; // or use a specific desktop container if you have one
+  const icons = document.querySelectorAll(".iconCtn");
+  let draggingIcon = null;
+  let offsetX = 0, offsetY = 0;
+  let desktopRect = null;
+
+  icons.forEach((icon) => {
+    icon.addEventListener("contextmenu", (e) => e.preventDefault()); // Prevent default right-click menu
+    icon.addEventListener("mousedown", (e) => {
+      if (e.button !== 2) return; // Only right mouse button
+      draggingIcon = icon;
+      desktopRect = desktop.getBoundingClientRect();
+      const iconRect = icon.getBoundingClientRect();
+      offsetX = e.clientX - iconRect.left;
+      offsetY = e.clientY - iconRect.top;
+      icon.style.transition = "none";
+      icon.style.zIndex = 100;
+      document.body.style.userSelect = "none";
+    });
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!draggingIcon) return;
+    let x = e.clientX - desktopRect.left - offsetX;
+    let y = e.clientY - desktopRect.top - offsetY;
+    // Boundaries
+    const iconRect = draggingIcon.getBoundingClientRect();
+    const iconW = iconRect.width;
+    const iconH = iconRect.height;
+    x = Math.max(0, Math.min(x, desktopRect.width - iconW));
+    y = Math.max(0, Math.min(y, desktopRect.height - iconH));
+    draggingIcon.style.left = `${x}px`;
+    draggingIcon.style.top = `${y}px`;
+  });
+
+  document.addEventListener("mouseup", (e) => {
+    if (draggingIcon && e.button === 2) {
+      draggingIcon.style.transition = "left 0.18s cubic-bezier(.4,1.3,.5,1), top 0.18s cubic-bezier(.4,1.3,.5,1)";
+      draggingIcon.style.zIndex = 1;
+      draggingIcon = null;
+      document.body.style.userSelect = "auto";
+    }
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  alignIconsInGrid();
+  makeIconsDraggable();
+  window.addEventListener("resize", alignIconsInGrid);
+});
