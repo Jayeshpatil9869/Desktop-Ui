@@ -201,13 +201,18 @@ function alignIconsInGrid() {
   const iconSize = 72; // Adjust based on your icon size (height + margin)
   const margin = 14; // Space between icons
   const desktopRect = desktop.getBoundingClientRect();
-  const maxRows = Math.floor((desktopRect.height - margin) / (iconSize + margin));
-  let x = margin, y = margin, row = 0;
+  const maxRows = Math.floor(
+    (desktopRect.height - margin) / (iconSize + margin)
+  );
+  let x = margin,
+    y = margin,
+    row = 0;
   icons.forEach((icon, i) => {
     icon.style.position = "absolute";
     icon.style.left = `${x}px`;
     icon.style.top = `${y}px`;
-    icon.style.transition = "left 0.18s cubic-bezier(.4,1.3,.5,1), top 0.18s cubic-bezier(.4,1.3,.5,1)";
+    icon.style.transition =
+      "left 0.18s cubic-bezier(.4,1.3,.5,1), top 0.18s cubic-bezier(.4,1.3,.5,1)";
     row++;
     if (row >= maxRows) {
       row = 0;
@@ -223,7 +228,8 @@ function makeIconsDraggable() {
   const desktop = document.body; // or use a specific desktop container if you have one
   const icons = document.querySelectorAll(".iconCtn");
   let draggingIcon = null;
-  let offsetX = 0, offsetY = 0;
+  let offsetX = 0,
+    offsetY = 0;
   let desktopRect = null;
 
   icons.forEach((icon) => {
@@ -257,7 +263,8 @@ function makeIconsDraggable() {
 
   document.addEventListener("mouseup", (e) => {
     if (draggingIcon && e.button === 2) {
-      draggingIcon.style.transition = "left 0.18s cubic-bezier(.4,1.3,.5,1), top 0.18s cubic-bezier(.4,1.3,.5,1)";
+      draggingIcon.style.transition =
+        "left 0.18s cubic-bezier(.4,1.3,.5,1), top 0.18s cubic-bezier(.4,1.3,.5,1)";
       draggingIcon.style.zIndex = 1;
       draggingIcon = null;
       document.body.style.userSelect = "auto";
@@ -274,8 +281,10 @@ window.addEventListener("DOMContentLoaded", () => {
 // ==============================
 // 🪟 Quick Settings Panel Logic
 // ==============================
+// ==============================
+// 🪟 Quick Settings Panel Logic (with GSAP animation)
+// ==============================
 (function quickSettingsPanelInit() {
-  // Use the .controlIcons div in the taskbar as the trigger
   const trayIcon = document.getElementById("quickSettingsTrayIcon");
   const panel = document.getElementById("quickSettingsPanel");
   const toggles = panel.querySelectorAll(".qs-toggle");
@@ -286,46 +295,75 @@ window.addEventListener("DOMContentLoaded", () => {
   const batteryVal = document.getElementById("qsBatteryVal");
   const batteryCharging = document.getElementById("qsBatteryCharging");
 
-  panel.style.display = "none";
+  // Initial state
+  gsap.set(panel, { y: 20, opacity: 0, display: "none" });
   let isPanelOpen = false;
+
   trayIcon.addEventListener("mousedown", (e) => {
     if (e.button !== 0) return; // Only left click
     e.stopPropagation();
+
     if (!isPanelOpen) {
-      panel.style.display = "block";
+      gsap.set(panel, { display: "block" });
+      gsap.to(panel, {
+        y: 0,
+        opacity: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
       isPanelOpen = true;
     } else {
-      panel.style.display = "none";
+      gsap.to(panel, {
+        y: 20,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.set(panel, { display: "none" });
+        },
+      });
       isPanelOpen = false;
     }
   });
 
   document.addEventListener("mousedown", (e) => {
     if (isPanelOpen && !panel.contains(e.target) && e.target !== trayIcon) {
-      panel.style.display = "none";
+      gsap.to(panel, {
+        y: 20,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.set(panel, { display: "none" });
+        },
+      });
       isPanelOpen = false;
     }
   });
 
-  // Toggle active state
+  // Toggle buttons (e.g. WiFi, Bluetooth)
   toggles.forEach(btn => {
     btn.addEventListener("click", () => {
       btn.classList.toggle("active");
     });
   });
 
-  // Sliders
+  // Volume control
   volume.addEventListener("input", () => {
     volumeVal.textContent = volume.value;
   });
 
+  // Brightness control (with min brightness)
   brightness.addEventListener("input", () => {
-    brightnessVal.textContent = brightness.value;
+    const value = brightness.value;
+    brightnessVal.textContent = value;
+    const brightnessNormalized = Math.max(value / 100, 0.4);
+    document.documentElement.style.setProperty('--brightness-level', brightnessNormalized);
   });
 
-  // Battery (demo, random value)
+  // Simulated battery logic
   function updateBattery() {
-    const percent = 87; // Replace with real API if needed
+    const percent = 87; // or use navigator.getBattery()
     batteryVal.textContent = percent + "%";
     batteryCharging.style.display = (Math.random() > 0.5) ? "inline" : "none";
   }

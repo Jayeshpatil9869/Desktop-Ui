@@ -27,6 +27,14 @@ body {
   font-family: segoIs;
 }
 
+:root {
+  --brightness-level: 1;
+}
+
+body {
+  filter: brightness(var(--brightness-level));
+  transition: filter 0.3s ease-in-out;
+}
 /* -------------------------
    Main Layout
 -------------------------- */
@@ -257,6 +265,7 @@ input:focus {
   height: 80%;
   width: 50%;
   border-radius: 10px;
+  z-index: 999;
 }
 
 .pinnedCtn {
