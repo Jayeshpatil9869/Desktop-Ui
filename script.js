@@ -270,3 +270,65 @@ window.addEventListener("DOMContentLoaded", () => {
   makeIconsDraggable();
   window.addEventListener("resize", alignIconsInGrid);
 });
+
+// ==============================
+// 🪟 Quick Settings Panel Logic
+// ==============================
+(function quickSettingsPanelInit() {
+  // Use the .controlIcons div in the taskbar as the trigger
+  const trayIcon = document.getElementById("quickSettingsTrayIcon");
+  const panel = document.getElementById("quickSettingsPanel");
+  const toggles = panel.querySelectorAll(".qs-toggle");
+  const volume = document.getElementById("qsVolume");
+  const volumeVal = document.getElementById("qsVolumeVal");
+  const brightness = document.getElementById("qsBrightness");
+  const brightnessVal = document.getElementById("qsBrightnessVal");
+  const batteryVal = document.getElementById("qsBatteryVal");
+  const batteryCharging = document.getElementById("qsBatteryCharging");
+
+  panel.style.display = "none";
+  let isPanelOpen = false;
+  trayIcon.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return; // Only left click
+    e.stopPropagation();
+    if (!isPanelOpen) {
+      panel.style.display = "block";
+      isPanelOpen = true;
+    } else {
+      panel.style.display = "none";
+      isPanelOpen = false;
+    }
+  });
+
+  document.addEventListener("mousedown", (e) => {
+    if (isPanelOpen && !panel.contains(e.target) && e.target !== trayIcon) {
+      panel.style.display = "none";
+      isPanelOpen = false;
+    }
+  });
+
+  // Toggle active state
+  toggles.forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.classList.toggle("active");
+    });
+  });
+
+  // Sliders
+  volume.addEventListener("input", () => {
+    volumeVal.textContent = volume.value;
+  });
+
+  brightness.addEventListener("input", () => {
+    brightnessVal.textContent = brightness.value;
+  });
+
+  // Battery (demo, random value)
+  function updateBattery() {
+    const percent = 87; // Replace with real API if needed
+    batteryVal.textContent = percent + "%";
+    batteryCharging.style.display = (Math.random() > 0.5) ? "inline" : "none";
+  }
+
+  updateBattery();
+})();
